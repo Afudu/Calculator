@@ -68,14 +68,14 @@
   <h1>Calculator App</h1>
 
   <div class="calculator">
-    <label>Enter the shortfill capacity (ml):</label>
-    <input type="number" id="s" placeholder="Shortfill capacity" min="0" />
+    <label>Enter the shortfill volume (ml):</label>
+    <input type="number" id="shortFillVolume" placeholder="Shortfill volume" min="0" />
 
-    <label>Enter the nic-shot density (mg/ml):</label>
-    <input type="number" id="d" placeholder="Nic-shot density" min="0" />
+    <label>Enter the nic-shot strength (mg/ml):</label>
+    <input type="number" id="nicShotStrength" placeholder="Nic-shot strength" min="0" />
 
     <label>Enter the target density (mg/ml):</label>
-    <input type="number" id="t" placeholder="Target density" min="0" />
+    <input type="number" id="targetStrength" placeholder="Target strength" min="0" />
 
     <button onclick="calculate()">Calculate</button>
 
@@ -85,41 +85,43 @@
 
   <script>
     function calculate() {
-      const s = parseFloat(document.getElementById('s').value);
-      const d = parseFloat(document.getElementById('d').value);
-      const t = parseFloat(document.getElementById('t').value);
+      const shortFillVolume = parseFloat(document.getElementById('shortFillVolume').value);
+      const nicShotStrength = parseFloat(document.getElementById('nicShotStrength').value);
+      const targetStrength = parseFloat(document.getElementById('targetStrength').value);
       const errorDiv = document.getElementById('error');
       const messageDiv = document.getElementById('message');
+
 
       // Clear previous messages
       errorDiv.textContent = '';
       messageDiv.textContent = '';
 
       // Validation
-      if (isNaN(s) || isNaN(d) || isNaN(t)) {
-        errorDiv.textContent = 'Please enter valid numbers for S, D, and T.';
+      if (isNaN(shortFillVolume) || isNaN(nicShotStrength) || isNaN(nicShotStrength)) {
+        errorDiv.textContent = 'Please enter valid numbers for shortFillVolume, nicShotStrength, and targetStrength.';
         return;
       }
 
-      if (s <= 0 || d <= 0 || t <= 0) {
-        errorDiv.textContent = 'S, D, and T must be positive numbers.';
+      if (shortFillVolume <= 0 || nicShotStrength <= 0 || targetStrength <= 0) {
+        errorDiv.textContent = 'shortFillVolume, nicShotStrength, and targetStrength must be positive numbers.';
         return;
       }
 
-      if (t >= d) {
-        errorDiv.textContent = 'T must be less than D.';
+      if (targetStrength >= nicShotStrength) {
+        errorDiv.textContent = 'targetStrength must be less than nicShotStrength.';
         return;
       }
 
-      const denominator = d * 10 - 10 * t;
+      const denominator = 10*(nicShotStrength - targetStrength);
 
-      if (denominator === 0) {
-        errorDiv.textContent = 'Calculation error: denominator is zero.';
-        return;
-      }
+     // if (denominator === 0) {
+       // errorDiv.textContent = 'Calculation error: denominator is zero.';
+        //return;
+      //}
 
-      const n = (s * t) / denominator;
-      messageDiv.textContent = 'Number of needed nic-shots: ' + n.toFixed(0);
+      const n = (shortFillVolume * targetStrength) / denominator;
+      const tc = shortFillVolume + n*10;
+      messageDiv.innerHTML = 'Number of nic-shots needed: ' + n.toFixed(2) + '<br><br>Total capacity needed: ' +tc.toFixed(2)+'ml';
     }
   </script>
 
